@@ -66,10 +66,9 @@ def getOrderedAttDefSummary(results, ordered_att_summary, ordered_def_summary):
         ordered_def_summary.append(def_sum)
 
 def findDefSummary(team, ordered_def_summary):
-    if isinstance(ordered_def_summary, team.__class__):
-        for def_sum in ordered_def_summary:
-            if(def_sum.team == team):
-                return def_sum
+    for def_sum in ordered_def_summary:
+        if(def_sum.team == team):
+            return def_sum
         
 def findAttSummary(team, ordered_att_summary):
     for att_sum in ordered_att_summary:
@@ -98,8 +97,7 @@ def orderAttSummary(all_att_summaries):
                curr = all_att_summaries[idx]
                next = all_att_summaries[idx + 1]
 
-#               if(curr.greaterThn(next) == False):
-               if(curr > next == False):
+               if(curr < next):
                    # Swap
                    all_att_summaries[idx + 1] = curr
                    all_att_summaries[idx] = next
@@ -117,7 +115,7 @@ def orderDefSummary(all_def_summaries):
                curr = all_def_summaries[idx]
                next = all_def_summaries[idx + 1]
 
-               if(curr.greaterThanCS(next) == False):
+               if(curr < next):
                    # Swap
                    all_def_summaries[idx + 1] = curr
                    all_def_summaries[idx] = next

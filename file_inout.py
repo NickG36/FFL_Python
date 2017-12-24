@@ -53,10 +53,15 @@ def parseResults():
             home_team = string_list[0]
             home_gls = int(string_list[1])
             away_gls = int(string_list[2])
-            away_team = string_list[3]
+            full_away_team = string_list[3]
+
+            # Remove newline:
+            away_team = full_away_team[0:-1]
 
             curr_fix = common_types.Match(home_team, away_team,
                                           home_gls, away_gls)
+            #print("Curr fix: %s" % curr_fix)
+            
             result.append(curr_fix)
 
         curr_line = f.readline()

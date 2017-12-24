@@ -40,15 +40,15 @@ def outputAttackingInfo(fixtures, results, ordered_att_summary,
                 opposing_team = curr_res.away
             elif(curr_res.away == curr_team):
                 opposing_team = curr_res.home
-
+                
             # Look at curr_team's last 6 opponents and add up goals scored
             # in each of their last 6 matches
             opp_def = utils.findDefSummary(opposing_team, ordered_def_summary)
-
+            
             # Keep interpreter happy by showing it the type of opp_def
             if isinstance(opp_def, common_types.DefensiveSummary):
                 num_opp_gls_prev_matches += opp_def.goals_conceded.last6m
-
+                
         output_str += str(num_opp_gls_prev_matches) + ","
         
         next_opp_rank = 0
@@ -66,12 +66,12 @@ def outputAttackingInfo(fixtures, results, ordered_att_summary,
             match_found = False
 
             if(curr_fix.home == curr_team):
-                output_str += " "  + curr_fix.away + "a "
+                output_str += " "  + curr_fix.away + " A "
                 num_home_fixtures += 1
                 opponent = curr_fix.away
                 match_found = True
             elif(curr_fix.away == curr_team):
-                output_str += " " + curr_fix.home + "h "
+                output_str += " " + curr_fix.home + " H "
                 opponent = curr_fix.home
                 match_found = True
 
@@ -124,7 +124,7 @@ def outputDefensiveInfo(fixtures, results, ordered_att_summary,
     """
     # TO DO: Split this fn into bits - it's too big
     print("Defensive data:")
-    print(",Goals Scored,,,Clean Sheets,,, next opponents (w att rank),,,,,,, #home matches, ave op rk 3")
+    print(",Goals Conceded,,,Clean Sheets,,,, next opponents (w att rank),,,,,,, #home matches,, ave op rk 3")
     print(",    10m,      6m,     All, 10m, *6m, All, Prev opp gls A last 6,,,,,,,Next opp gls A  last 6, Fixture easing")
 
     for i in range(0, len(ordered_def_summary), 1):
@@ -178,12 +178,12 @@ def outputDefensiveInfo(fixtures, results, ordered_att_summary,
             match_found = False
 
             if(curr_fix.home == curr_team):
-                output_str += " "  + curr_fix.away + "a "
+                output_str += " "  + curr_fix.away + " A "
                 num_home_fixtures += 1
                 opponent = curr_fix.away
                 match_found = True
             elif(curr_fix.away == curr_team):
-                output_str += " " + curr_fix.home + "h "
+                output_str += " " + curr_fix.home + " H "
                 opponent = curr_fix.home
                 match_found = True
 
@@ -210,7 +210,7 @@ def outputDefensiveInfo(fixtures, results, ordered_att_summary,
         elif fixture_easing < -20:
             output_str += "H "
                 
-        output_str += str(fixture_easing) + ", " + str(num_home_fixtures) + ", "
+        output_str += ", " + str(fixture_easing) + ", " + str(num_home_fixtures) + ", "
 
         int_next_opp_rank = (next_opp_rank / 3.0)
         output_str += str(int_next_opp_rank) + ", "
@@ -238,7 +238,7 @@ def main():
     ordered_def_summary = []
 
     utils.getOrderedAttDefSummary(results, ordered_att_summary, ordered_def_summary)
-
+    print("Size of ordered def sum %d " % len(ordered_def_summary) )
     # Set up ranked attacks
     ranked_attacks = {}
 

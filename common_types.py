@@ -58,13 +58,13 @@ class TimeFrame:
         """
         result = True
 
-        if(self.last6m > other.last6m):
+        if(self.last6m < other.last6m):
             result = True
-        elif(self.last6m < other.last6m):
+        elif(self.last6m > other.last6m):
             result = False
-        elif(self.all > other.all):
-            result = True
         elif(self.all < other.all):
+            result = True
+        elif(self.all > other.all):
             result = False
         
         return result
@@ -75,9 +75,6 @@ class AttackingSummary:
     """
     team = "Not defined"
     goals_scored = TimeFrame()
-
-#    def __init__(self):
-#        self.goals_scored = TimeFrame()
 
     def __init__(self, team):
         self.goals_scored = TimeFrame()
@@ -133,46 +130,31 @@ class DefensiveSummary:
         if(len(self.team) < 7):
             padding += "\t"
             
-        return self.team + " " + padding + " " + self.goals_conceded.all + " " + \
-               self.goals_conceded.last10m + " " + self.goals_conceded.last6m + " " + \
-               self.clean_sheets.all + " " + self.clean_sheets.last10m + " " + self.clean_sheets.last6m
+        return self.team + " " + padding + " " + str(self.goals_conceded.all) + " " + \
+               str(self.goals_conceded.last10m) + " " + str(self.goals_conceded.last6m) + " " + \
+               str(self.clean_sheets.all) + " " + str(self.clean_sheets.last10m) + " " + str(self.clean_sheets.last6m)
 
-    # TO DO: Replace with lt
-    def greaterThanCS(self, rhs):
+    def __eq__(self, other):
+        
+        result = False
+        if isinstance(other, self.__class__):
+            result = (self.team == other.team) and \
+                     (self.clean_sheets == other.clean_sheets) and \
+                     (self.goals_conceded == other.goals_conceded)
+        else:
+            result = False
+
+        return result
+    
+    def __lt__(self, other):
+
         """
         Compares the clean sheets within two DefensiveSummarys.
         It considers the results over the last 6 matches to be the most significant stat
         """
-        result = True
-        if(self.clean_sheets.last6m > rhs.clean_sheets.last6m):
-            result = True
-        elif(self.clean_sheets.last6m < rhs.clean_sheets.last6m):
-            result = False
-        elif(self.clean_sheets.all > rhs.clean_sheets.all):
-            result = True
-        elif(self.clean_sheets.all < rhs.clean_sheets.all):
-            result = False
+        if(self.clean_sheets != other.clean_sheets):
+            return (self.clean_sheets < other.clean_sheets)
+        elif(self.goals_conceded != other.goals_conceded):
+            return (self.goals_conceded > other.goals_conceded)
         else:
-            result = (self.team > rhs.team)
-
-        return result
-
-    def greaterThanGls(self, rhs):
-        """
-        Compares the goals scored within two DefensiveSummarys.
-        It considers the results over the last 6 matches to be the most significant stat
-        """
-        result = True
-        if(self.goals_conceded.last6m > rhs.goals_conceded.last6m):
-            result = True
-        elif(self.goals_conceded.last6m < rhs.goals_conceded.last6m):
-            result = False
-        elif(self.goals_conceded.all > rhs.goals_conceded.all):
-            result = True
-        elif(self.goals_conceded.all < rhs.goals_conceded.all):
-            result = False
-        else:
-            result = (self.team > rhs.team)
-
-        return result
-
+            return (self.team > other.team)
