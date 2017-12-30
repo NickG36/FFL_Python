@@ -236,17 +236,17 @@ def outputDefensiveInfo(fixtures, results, ordered_att_summary,
                 
 
 def main():
-    tl = team_list.Team_List
-
+    # Parse the fixtures and results files
     fixtures = file_inout.parseFixtures()
     results = file_inout.parseResults()
 
     ordered_att_summary = []
     ordered_def_summary = []
 
+    # Find an list of the attacking and defensive summaries for each team
     utils.getOrderedAttDefSummary(results, ordered_att_summary, ordered_def_summary)
-    print("Size of ordered def sum %d " % len(ordered_def_summary) )
-    # Set up ranked attacks
+
+    # Put the attacking summaries in order with the team whose attack is best as rank 1
     ranked_attacks = {}
 
     rank = 1
@@ -254,6 +254,7 @@ def main():
         ranked_attacks[curr_team_score.team] = rank
         rank += 1
 
+    # Do the same with the defences
     ranked_defences = {}
 
     rank = 1
@@ -261,12 +262,14 @@ def main():
         ranked_defences[curr_team_score.team] = rank
         rank += 1
 
+    # Write out to file the attacking details
     outputAttackingInfo(fixtures,
                         results,
                         ordered_att_summary,
                         ordered_def_summary,
                         ranked_defences)
 
+    # ... and the same for defensive details
     outputDefensiveInfo(fixtures,
                         results,
                         ordered_att_summary,
