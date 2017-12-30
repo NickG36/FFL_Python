@@ -2,8 +2,63 @@
 import file_inout
 import team_list
 import common_types
-#import sets
 import utils
+
+def findNumOppGlsConcededPrevMatches(num_matches, this_team_results, curr_team, ordered_def_summary):
+    """
+    Will look at the last few matches played by the given opponent and calculate how
+    many goals the opponent conceded
+    """
+    num_opp_gls_prev_matches = 0
+    num_results = len(this_team_results)
+    
+    for res_idx in range(0, 6, 1):
+        curr_res = this_team_results[num_results - res_idx - 1]
+            
+        opposing_team = ""
+
+        if(curr_res.home == curr_team):
+            opposing_team = curr_res.away
+        elif(curr_res.away == curr_team):
+            opposing_team = curr_res.home
+                
+        # Look at curr_team's last 6 opponents and add up goals scored
+        # in each of their last 6 matches
+        opp_def = utils.findDefSummary(opposing_team, ordered_def_summary)
+            
+        # Keep interpreter happy by showing it the type of opp_def
+        if isinstance(opp_def, common_types.DefensiveSummary):
+            num_opp_gls_prev_matches += opp_def.goals_conceded.last6m
+
+    return num_opp_gls_prev_matches
+    
+def findNumOppGlsScoredPrevMatches(num_matches, this_team_results, curr_team, ordered_att_summary):
+    """
+    Will look at the last few matches played by the given opponent and calculate how
+    many goals the opponent conceded
+    """
+    num_opp_gls_prev_matches = 0
+    num_results = len(this_team_results)
+    
+    for res_idx in range(0, 6, 1):
+        curr_res = this_team_results[num_results - res_idx - 1]
+            
+        opposing_team = ""
+
+        if(curr_res.home == curr_team):
+            opposing_team = curr_res.away
+        elif(curr_res.away == curr_team):
+            opposing_team = curr_res.home
+                
+        # Look at curr_team's last 6 opponents and add up goals scored
+        # in each of their last 6 matches
+        opp_att = utils.findAttSummary(opposing_team, ordered_att_summary)
+        if isinstance(opp_att, common_types.AttackingSummary):
+            num_opp_gls_prev_matches += opp_att.goals_scored.last6m
+
+    return num_opp_gls_prev_matches
+
+
 
 def outputAttackingInfo(fixtures, results, ordered_att_summary,
                         ordered_def_summary, ranked_def_gls):
@@ -11,7 +66,6 @@ def outputAttackingInfo(fixtures, results, ordered_att_summary,
     Prints a nicely formatted summary of the attacking info for each team
     """
 
-    # TO DO: Split this fn into bits - it's too big
     print("Attacking data:")
     print(",Goals Scored,,,, 6m opp ranking, next opponents (w att rank),,,,,,, #home matches, ave op rk 3")
     print(",    10m,      *6m*,     All, Prev opp gls A last 6,,,,,,,Next opp gls A  last 6, Fixture easing")
@@ -20,37 +74,14 @@ def outputAttackingInfo(fixtures, results, ordered_att_summary,
         curr_att_sum = ordered_att_summary[i]
         curr_team = curr_att_sum.team
 
-        # TO DO: Change __str__ def for AttackingSummary and use this?
         output_str = curr_team + ","
-        output_str += str(curr_att_sum.goals_scored.last10m) + ","
-        output_str += str(curr_att_sum.goals_scored.last6m) + ","
-        output_str += str(curr_att_sum.goals_scored.all) + ","
+        output_str += str(curr_att_sum)
 
         this_team_results = utils.filterResByTeam(results, curr_team)
 
-        num_opp_gls_prev_matches = 0
-        num_results = len(this_team_results)
-
-        for res_idx in range(0, 6, 1):
-            curr_res = this_team_results[num_results - res_idx - 1]
-            
-            opposing_team = ""
-
-            if(curr_res.home == curr_team):
-                opposing_team = curr_res.away
-            elif(curr_res.away == curr_team):
-                opposing_team = curr_res.home
-                
-            # Look at curr_team's last 6 opponents and add up goals scored
-            # in each of their last 6 matches
-            opp_def = utils.findDefSummary(opposing_team, ordered_def_summary)
-            
-            # Keep interpreter happy by showing it the type of opp_def
-            if isinstance(opp_def, common_types.DefensiveSummary):
-                num_opp_gls_prev_matches += opp_def.goals_conceded.last6m
-                
+        num_opp_gls_prev_matches = findNumOppGlsConcededPrevMatches(6, this_team_results, curr_team, ordered_def_summary)
         output_str += str(num_opp_gls_prev_matches) + ","
-        
+
         next_opp_rank = 0
         num_opponents_found = 0
         num_home_fixtures = 0
@@ -122,7 +153,7 @@ def outputDefensiveInfo(fixtures, results, ordered_att_summary,
     """
     Prints a nicely formatted summary of the defensive info for each team
     """
-    # TO DO: Split this fn into bits - it's too big
+
     print("Defensive data:")
     print(",Goals Conceded,,,Clean Sheets,,,, next opponents (w att rank),,,,,,, #home matches,, ave op rk 3")
     print(",    10m,      6m,     All, 10m, *6m, All, Prev opp gls A last 6,,,,,,,Next opp gls A  last 6, Fixture easing")
@@ -131,36 +162,12 @@ def outputDefensiveInfo(fixtures, results, ordered_att_summary,
         curr_def_sum = ordered_def_summary[i]
         curr_team = curr_def_sum.team
 
-        # TO DO: Change __str__ def for DefendingSummary and use this?
         output_str = curr_team + ","
-        output_str += str(curr_def_sum.goals_conceded.last10m) + ","
-        output_str += str(curr_def_sum.goals_conceded.last6m) + ","
-        output_str += str(curr_def_sum.goals_conceded.all) + ","
-        output_str += str(curr_def_sum.clean_sheets.last10m) + ","
-        output_str += str(curr_def_sum.clean_sheets.last6m) + ","
-        output_str += str(curr_def_sum.clean_sheets.all) + ","
+        output_str += str(curr_def_sum)
 
         this_team_results = utils.filterResByTeam(results, curr_team)
 
-        num_opp_gls_prev_matches = 0
-        num_results = len(this_team_results)
-
-        for res_idx in range(0, 6, 1):
-            curr_res = this_team_results[num_results - res_idx - 1]
-
-            opposing_team = ""
-
-            if(curr_res.home == curr_team):
-                opposing_team = curr_res.away
-            elif(curr_res.away == curr_team):
-                opposing_team = curr_res.home
-
-            # Look at curr_team's last 6 opponents and add up goals scored
-            # in each of their last 6 matches
-            opp_att = utils.findAttSummary(opposing_team, ordered_att_summary)
-            if isinstance(opp_att, common_types.AttackingSummary):
-                num_opp_gls_prev_matches += opp_att.goals_scored.last6m
-
+        num_opp_gls_prev_matches = findNumOppGlsScoredPrevMatches(6, this_team_results, curr_team, ordered_att_summary)
         output_str += str(num_opp_gls_prev_matches) + ","
 
         next_opp_rank = 0

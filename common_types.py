@@ -80,14 +80,23 @@ class AttackingSummary:
         self.goals_scored = TimeFrame()
         self.team = team
 
-    def __str__(self):
-        padding = "\t"
-        if(len(self.team) < 7):
-            padding += "\t"
+    #def __str__(self):
+        #padding = "\t"
+        #if(len(self.team) < 7):
+            #padding += "\t"
             
-        return self.team + " " + padding + " " + self.goals_scored.all + " " + \
-               self.goals_scored.last10m + " " + self.goals_scored.last6m
+        #return self.team + " " + padding + " " + self.goals_scored.all + " " + \
+               #self.goals_scored.last10m + " " + self.goals_scored.last6m
 
+    def __str__(self):
+        """
+        Output string in an appropriate format for outputting into a csv file,
+        as required
+        """
+        return str(self.goals_scored.last10m) + "," +\
+               str(self.goals_scored.last6m) + "," +\
+               str(self.goals_scored.all) + ","
+                   
     def __eq__(self, other):
         
         result = False
@@ -125,14 +134,24 @@ class DefensiveSummary:
         self.clean_sheets = TimeFrame()
         self.team = team
 
-    def __str__(self):
-        padding = "\t"
-        if(len(self.team) < 7):
-            padding += "\t"
+    #def __str__(self):
+        #padding = "\t"
+        #if(len(self.team) < 7):
+            #padding += "\t"
             
-        return self.team + " " + padding + " " + str(self.goals_conceded.all) + " " + \
-               str(self.goals_conceded.last10m) + " " + str(self.goals_conceded.last6m) + " " + \
-               str(self.clean_sheets.all) + " " + str(self.clean_sheets.last10m) + " " + str(self.clean_sheets.last6m)
+        #return self.team + " " + padding + " " + str(self.goals_conceded.all) + " " + \
+               #str(self.goals_conceded.last10m) + " " + str(self.goals_conceded.last6m) + " " + \
+               #str(self.clean_sheets.all) + " " + str(self.clean_sheets.last10m) + " " + str(self.clean_sheets.last6m)
+
+    def __str__(self):
+            
+        return str(self.goals_conceded.last10m) + "," + \
+               str(self.goals_conceded.last6m) + "," + \
+               str(self.goals_conceded.all) + "," + \
+               str(self.clean_sheets.last10m) + "," + \
+               str(self.clean_sheets.last6m) + "," + \
+               str(self.clean_sheets.all) + ","
+               
 
     def __eq__(self, other):
         
